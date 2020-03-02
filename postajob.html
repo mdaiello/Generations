@@ -16,11 +16,6 @@ body {
 
 </style>
 </head>
-<body>
-
-
-</body>
-
     
     <head>
         <!-- Compiled and minified CSS -->
@@ -43,13 +38,12 @@ body {
       </ul>
     </div>
   </nav>
+    
+</body>
 
-
-
-<body>
   <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
   <script src="main.js"></script>
-</body>
+
 
 
 
@@ -73,7 +67,9 @@ body {
     
     <!-- HERE IS THE JAVASCRIPT TO CONNECT TO YOUR FIREBASE -->
     <script>
-        var rIndex, table = document.getElementById("table");
+        var rIndex, table = document.getElementById("stuff");
+        var userId = "";
+        
         // Your web app's Firebase configuration
         var config = {
             apiKey: "AIzaSyBw2Q7tYDBpia5qQq4-Tx72qkT0D5YUmsY",
@@ -94,9 +90,10 @@ body {
                 return;
             } else {
                 userId = user.uid; // you can also get .displayName, .photoURL, .email
+                console.log(userId);
                 
                 userphoto = user.photoURL;
-                getData();
+                getData(userId);
             
             } // end user null check
         }); // end check auth state
@@ -125,22 +122,18 @@ body {
             document.getElementById("tweet_text4").value = "";
             document.getElementById("tweet_text5").value = "";
             document.getElementById("tweet_text6").value = "";
-            addRow();
-            getData();
-            
-
+            getData(userId);
 
         }
         
-        
-                   var rIndex,
-                table = document.getElementById("table");
+         var rIndex,
+                table = document.getElementById("stuff");
             
             // check the empty input
             function checkEmptyInput()
             {
                 var isEmpty = false,
-                    tweet_text = document.getElementById("tweet_text").value,
+                    stuff = document.getElementById("tweet_text").value,
                     tweet_text1 = document.getElementById("tweet_text1").value,
                     tweet_text2 = document.getElementById("tweet_text2").value,
                     tweet_text3 = document.getElementById("tweet_text3").value,
@@ -149,19 +142,18 @@ body {
                     tweet_text6 = document.getElementById("tweet_text6").value;
             
                 if(tweet_text === ""){
-                    alert("First Name Cannot Be Empty");
+                    alert("(Cannot Be Empty)");
                     isEmpty = true;
                 }
                 else if(tweet_text1 === ""){
-                    alert("Last Name Cannot Be Empty");
+                    alert("Name Cannot Be Empty");
                     isEmpty = true;
                 }
                 else if(tweet_text2 === ""){
-                    alert("Age Cannot Be Empty");
+                    alert("da Cannot Be Empty");
                     isEmpty = true;
                 }
                 return isEmpty;
-                pushData();
             }
             
         
@@ -181,14 +173,14 @@ body {
                     cell5 = newRow.insertCell(4),
                     cell6 = newRow.insertCell(5),
                     cell7 = newRow.insertCell(6),
-                    tweet_text = document.getElementById("tweet_text").value,
+                    stuff = document.getElementById("tweet_text").value,
                     tweet_text1 = document.getElementById("tweet_text1").value,
                     tweet_text2 = document.getElementById("tweet_text2").value,
                     tweet_text3 = document.getElementById("tweet_text3").value,
                     tweet_text4 = document.getElementById("tweet_text4").value,
                     tweet_text5 = document.getElementById("tweet_text5").value,
                     tweet_text6 = document.getElementById("tweet_text6").value;
-                cell1.innerHTML = tweet_text;
+                cell1.innerHTML = stuff;
                 cell2.innerHTML = tweet_text1;
                 cell3.innerHTML = tweet_text2;
                 cell4.innerHTML = tweet_text3;
@@ -200,8 +192,8 @@ body {
                 pushData();      
             }
             }
-             // HERE IS THE FUNCTION TO SHOW HOW TO GET USER DATA
-       function getData() {
+     // HERE IS THE FUNCTION TO SHOW HOW TO GET USER DATA
+       function getData(userId) {
            //var userId = document.getElementById("uid").innerHTML;
            firebase.database().ref('/tweets/' + userId).once('value', function(snapshot) {
                console.log(snapshot.val());
@@ -211,9 +203,17 @@ body {
                }
                var values = Object.values(snapshot.val());
                
+               var mydiv = document.getElementById("stuff");
+                                   
+               var mystuff = "<table id='myTable'>";
                for (i = 0; i<values.length; i++) {
-                   console.log(values[i].tweet_text);
+                   mystuff = mystuff + "<tr>";
+                   mystuff = mystuff + "<td>" + values[i]['Name'] + "</td><td>" + values[i]['Address'] + "</td><td>" + values[i]['Job'] + "</td><td>" + values[i]['EstTime'] + "</td><td>" + values[i]['Date'] + "</td><td>" + values[i]['Email'] + "</td><td>" + values[i]['phone']+"</td><td><input type='button' value='Complete This Job' onclick='rowdelete(this)'></td>";
+                   mystuff = mystuff + "</tr>";
                }
+               mystuff = mystuff + "</table>"
+               mydiv.innerHTML = mystuff;
+
            });
 
        }
@@ -224,9 +224,14 @@ body {
                 window.location.replace("fbtest.html");
             });
         }
+                function rowdelete(r) {
+              var i = r.parentNode.parentNode.rowIndex;
+              document.getElementById("myTable").deleteRow(i);
+                removeData();
+            }
        // HERE IS THE FUNCTION TO SHOW HOW TO SET/OVERWRITE USER DATA
        function setData() {
-           var userId = document.getElementById("uid").innerHTML;
+           //var userId = document.getElementById("uid").innerHTML;
            var js_time = Date.now();
            firebase.database().ref('/tweets/' + userId).set({tweet:"Set over-writes", time: js_time}); 
        }
@@ -260,7 +265,7 @@ body {
             
             function editHtmlTbleSelectedRow()
             {
-                var tweet_text = document.getElementById("tweet_text").value,
+                var stuff = document.getElementById("tweet_text").value,
                     tweet_text1 = document.getElementById("tweet_text1").value,
                     tweet_text2 = document.getElementById("tweet_text2").value,
                     tweet_text3 = document.getElementById("tweet_text3").value,
@@ -269,7 +274,7 @@ body {
                     tweet_text6 = document.getElementById("tweet_text6").value;    
                if(!checkEmptyInput()){
                 table.rows[rIndex].cells[0].innerHTML = tweet_text;
-                table.rows[rIndex].cells[1].innerHTML = tweet_text1;
+                table.rows[rIndex].cells[1].innerHTML = tweet_text1;x
                 table.rows[rIndex].cells[2].innerHTML = tweet_text2;
                 table.rows[rIndex].cells[3].innerHTML = tweet_text3;
                 table.rows[rIndex].cells[4].innerHTML = tweet_text4;
@@ -283,19 +288,20 @@ body {
             {
                 table.deleteRow(rIndex);
                 // clear input text
-                document.getElementById("tweet_text").value = "";
-                document.getElementById("tweet_text1").value = "";
-                document.getElementById("tweet_text2").value = "";
-                document.getElementById("tweet_text3").value = "";
-                document.getElementById("tweet_text4").value = "";
-                document.getElementById("tweet_text5").value = "";
-                document.getElementById("tweet_text6").value = "";
+                document.getElementById("curtweet").value = "";
+                document.getElementById("curtweet1").value = "";
+                document.getElementById("curtweet2").value = "";
+                document.getElementById("curtweet3").value = "";
+                document.getElementById("curtweet4").value = "";
+                document.getElementById("curtweet5").value = "";
+                document.getElementById("curtweet6").value = "";
                 removeData();
             }
+        
 
             
                     function removeData() {
-            var tweetid = firebase.database().ref('tweets/' + userId + "/").remove();
+            var tweetid = firebase.database().ref('tweets/' + mystuff + "/").remove();
         }
     
         function updateDetails() {
@@ -303,6 +309,15 @@ body {
           firebase.database().ref('/details/' + userId).set({name:tweet_text, email: tweet_text1, time: tweet_text2, userphoto: tweet_text3, time: tweet_text4});
        }
         
+        function ValidateEmail(mail) 
+{
+ if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(myForm.emailAddr.value))
+  {
+    return (true)
+  }
+    alert("You have entered an invalid email address!")
+    return (false)
+}
         
         
     </script>
@@ -310,97 +325,56 @@ body {
 
     
     
-    <head>
         <title>Generations</title>
         <meta charset="windows-1252">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
-        <style>
-            
-            .container{overflow: hidden}
-            .tab{float: left;}
-            .tab-2{margin-left: 50px}
-            .tab-2 input{display: block;margin-bottom: 10px}
-            tr{transition:all .25s ease-in-out}
-            tr:hover{background-color:#EEE;cursor: pointer}
-            
-            table {
-              font-family: arial, sans-serif;
-              border-collapse: collapse;
-              width: 100%;
-            }
-            
-            td, th {
-              border: 1px solid #dddddd;
-              text-align: left;
-              padding: 8px;
-            }
-
-            tr:nth-child(even) {
-              background-color: #dddddd;
-            }
-
-        </style>
         
-    </head>
-    <body>
+            
+
+        
+        
         
         
         <center><h3> Post Your Job </h3></center>
-        <center><p> In order to post your next job, please complete all fields in the form below and then click the "Post Your Job" button</p></center>
+    <center><p><font size="4"> In order to post your next job, please complete all fields in the form below and then click the "Post Your Job" button</font></p></center>
         <center><button class="btn waves-effect waves-light" type="submit" name="action" onclick="signin();">Please press this button to sign in and save your data</button></center>
-        <center><p> For UCC boys looking to complete a job, select a job and press the "Complete Job" button.  Once you complete your job, log your hours into ManageBac by clicking on the "Log Hours" button.</p></center>
+    <center><p><font size="4"> For UCC boys looking to complete a job, select a job and press the "Complete Job" button.  Once you complete your job, log your hours into ManageBac by clicking on the "Log Hours" button.</font></p></center>
                 <center><button class="btn waves-effect waves-light" type="submit" name="action" onclick="window.location.href = ' https://sites.google.com/ucc.on.ca/generationswalkthrough/home';">Walkthrough of site</button></center>
-        <center><p>Notice:  You will recieve notification once your job has been accepted.</p></center>
+    <center><p><font size="4">Notice:  You will recieve notification once your job has been accepted.</font></p></center>
         <center><h3>Jobs</h3></center>
         <div class="container">
             <div class="grid-item">
                 <table id="table" border="1">
-                    <tr>
-                        <th>Full Name </th>
-                        <th>Address</th>
-                        <th>Job Type</th>
-                        <th>Estimated Time Required</th>
-                        <th>Date of Completion</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                    </tr>
+
+
                 </table>
             </div></div>
+                        <div id="stuff"></div>
             
             
         
     
             
             
-            <div class="tab tab-2">
-                Full Name <input type="text" name="tweet_text" id="tweet_text">
-                Adress <input type="text" name="tweet_text1" id="tweet_text1">
-                Job Type <input type="text" name="tweet_text2" id="tweet_text2">
-                Estimated Time Required <input type="text" name="tweet_text3" id="tweet_text3">
-                Date of Completion <input type="text" name="tweet_text4" id="tweet_text4">
-                Email *You must have a valid Email Address to use this site <input type="text" name="tweet_text5" id="tweet_text5">
-                Phone Number <input type="text" name="tweet_text6" id="tweet_text6">
-                                                                                                                                                
-                <button class="btn waves-effect waves-light" type="submit" name="action" onclick="addHtmlTableRow();">Post Your Job</button>
-                <button class="btn waves-effect waves-light" type="submit" name="action" onclick="removeSelectedRow();"> Complete Job</button>
-                <button class="btn waves-effect waves-light" type="submit" name="action" onclick="window.location.href = 'https://managebac.com';"> Log Your Hours</button>
+<div class="tab tab-2">
+    Full Name <input type="text" name="tweet_text" id="tweet_text" >
 
-                
-                
-                
-               
+    Address <input type="text" name="tweet_text1" id="tweet_text1">
+    Job Type <input type="text" name="tweet_text2" id="tweet_text2">
+    Estimated Time Required <input type="text" name="tweet_text3" id="tweet_text3">
+    Date of Completion <input type="text" name="tweet_text4" id="tweet_text4">
+    Email *You must have a valid Email Address to use this site <input type="text" name="tweet_text5" id="tweet_text5" pattern required="[^@]+@[^@]+\.[a-zA-Z]{2,6}">	
+    Phone Number <input type="text" name="tweet_text6" id="tweet_text6">
+
+    <button class="btn waves-effect waves-light" type="submit" name="action" onclick="pushData();">Post Your Job</button>
     
-                
-            </div>
-        
-        <br>
-        
-        <script>
-            
- 
-        </script>
-        </body>
+    <button class="btn waves-effect waves-light" type="submit" name="action" onclick="window.location.href = 'https://managebac.com';"> Log Your Hours</button>
+    <button class="btn waves-effect waves-light" type="submit" name="action" onclick="window.location.href = 'https://www.google.com/maps/';"> Get Directions</button>
+</div>
+
+<br>
+
 <style>
 
 
@@ -434,11 +408,6 @@ body {
         background-color: #00ace6;
     }
     
-    
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>CSS Website Layout</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -448,6 +417,28 @@ body {
 
 body {
   margin: 0;
+}
+.container{overflow: hidden}
+.tab{float: left;}
+.tab-2{margin-left: 50px}
+.tab-2 input{display: block;margin-bottom: 10px}
+tr{transition:all .25s ease-in-out}
+tr:hover{background-color:#EEE;cursor: pointer}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
 }
 
 /* Style the header */
@@ -501,7 +492,7 @@ body {
           <div class="footer-copyright">
             <div class="container">
             Personal Project - Generations
-            <a class="grey-text text-lighten-4 right"><font face="cursive" size="5">Come to find a job, leave with a connection</font></a>
+            <a class="grey-text text-lighten-4 right"><font face="cursive" size="5"> Come to find a job, leave with a connection</font></a>
             </div>
           </div>
         </footer>
